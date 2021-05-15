@@ -12,22 +12,28 @@ const users = [];
 function checksExistsUserAccount(request, response, next) {
   const { username } = request.headers;
 
-  const userAlreadyExists = users.find((user) => username === user.username);
-
-  if (!userAlreadyExists) {
+  const user = users.find((user) => username === user.username);
+  if (!user) {
     return response.status(404).json({ error: "User not found!" });
   }
-  request.user = userAlreadyExists;
+  request.user = user;
 
   return next();
 }
 
 function checksCreateTodosUserAvailability(request, response, next) {
-  // Complete aqui
+  const { user } = request;
+  if (!user.pro && user.todos.length >= 10) {
+    return response
+      .status(403)
+      .json({ error: "Does not meet the necessary requirements!" });
+  }
+
+  return next();
 }
 
 function checksTodoExists(request, response, next) {
-  // Complete aqui
+  //
 }
 
 function findUserById(request, response, next) {
